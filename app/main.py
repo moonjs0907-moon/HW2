@@ -33,14 +33,15 @@ async def predict_image(file: UploadFile = File(...)):
         # PIL을 통해 이미지 객체로 변환 (RGB 형태로 보정)
         image = Image.open(io.BytesIO(contents)).convert("RGB")
         
-        # 모델을 이용한 예측 수행
-        is_spam, confidence = predict_spam(image)
+        # 분리된 모델 모듈을 통한 예측 수행 (스팸 여부, 확신도, 스팸 상세 유형)
+        is_spam, confidence, spam_type = predict_spam(image)
         
         return {
             "filename": file.filename,
             "is_spam": is_spam,
             "confidence": confidence,
-            "message": "스팸입니다!" if is_spam else "정상 메시지입니다."
+            "spam_type": spam_type,
+            "message": f"[{spam_type}] 스팸으로 분류되었습니다!" if is_spam else "분석 결과: 안전한 정상 메시지입니다."
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"이미지 처리 중 오류 발생: {str(e)}")
