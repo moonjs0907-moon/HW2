@@ -40,9 +40,7 @@ jobs:
           file: ./Dockerfile
           push: true
           # 하나의 빌드로 'latest'와 '커밋 해시' 두 가지 태그를 동시 생성
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/spam-classifier:latest
-          
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/spam-classifier:latest
           # Docker 빌드 레이어 캐싱을 통해 재빌드 속도 최적화
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/spam-classifier:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/spam-classifier:buildcache,mode=max
