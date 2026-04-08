@@ -27,13 +27,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 4. Git 커밋 해시(short SHA)를 가져와 이미지 태그용 변수로 저장
-      - name: Get Git short SHA
-        id: vars
-        shell: bash
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      # 5. Docker 이미지 빌드 및 Docker Hub 저장소로 푸시
+
+      # 4. Docker 이미지 빌드 및 Docker Hub 저장소로 푸시
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -42,7 +38,7 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/spam-classifier:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/spam-classifier:${{ steps.vars.outputs.sha_short }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/spam-classifier:${{ github.sha }}
           # Docker 빌드 레이어 캐싱을 통해 재빌드 속도 최적화
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/spam-classifier:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/spam-classifier:buildcache,mode=max
