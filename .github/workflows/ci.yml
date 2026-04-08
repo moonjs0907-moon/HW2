@@ -16,16 +16,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. 다중 아키텍처 및 고급 캐싱을 지원하기 위한 Docker Buildx 설정
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      # 3. Docker Hub 로그인 (GitHub Secrets 사용)
+      # 2. Docker Hub 로그인 (GitHub Secrets 사용)
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 3. 다중 아키텍처 및 고급 캐싱을 지원하기 위한 Docker Buildx 설정
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       # 4. Git 커밋 해시(short SHA)를 가져와 이미지 태그용 변수로 저장
       - name: Get Git short SHA
@@ -58,7 +58,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN || secrets.DOCKERHUB_PASSWORD }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Pull the latest Docker image
         run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/spam-classifier:latest
