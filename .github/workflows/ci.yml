@@ -9,7 +9,7 @@ on:
 jobs:
   build-and-push:
     name: Build & Push Docker Image
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       # 1. GitHub 저장소의 코드를 러너(Runner) 환경으로 체크아웃
@@ -47,3 +47,29 @@ jobs:
           # Docker 빌드 레이어 캐싱을 통해 재빌드 속도 최적화
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/spam-classifier:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/spam-classifier:buildcache,mode=max
+
+  deploy:
+    name: Deploy to Local Environment
+    needs: build-and-push
+    runs-on: self-hosted
+    
+    steps:
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN || secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Pull the latest Docker image
+        run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/spam-classifier:latest
+
+      - name: Stop existing container
+        run: docker stop spam-classifier
+        continue-on-error: true
+
+      - name: Remove existing container
+        run: docker rm spam-classifier
+        continue-on-error: true
+
+      - name: Run new container
+        run: docker run -d --name spam-classifier -p 8000:8000 ${{ secrets.DOCKERHUB_USERNAME }}/spam-classifier:latest

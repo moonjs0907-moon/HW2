@@ -1,0 +1,11 @@
+﻿{
+  "agentId": 2,
+  "agentName": "DESKTOP-6Q91PML",
+  "poolId": 1,
+  "poolName": "Default",
+  "serverUrl": "https://pipelinesghubeus14.actions.githubusercontent.com/UiPGEcAi8UwQBu3bxOx1xJz1DYmsO3IOPNeUerENJVTWezS7h8/",
+  "gitHubUrl": "https://github.com/moonjs0907-moon/HW2",
+  "workFolder": "_work",
+  "useV2Flow": true,
+  "serverUrlV2": "https://broker.actions.githubusercontent.com/"
+}
